@@ -39,3 +39,10 @@ class llamaguard_toxicchat_dataset:
     dataset: str = "llamaguard_toxicchat_dataset"
     train_split: str = "train"
     test_split: str = "test"
+
+@dataclass
+class biotriplex_dataset:
+    dataset: str = "biotriplex_dataset"
+    train_split: str = "train"
+    test_split: str = "val"
+    data_path: str = "../biotriplex/data/"
