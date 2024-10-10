@@ -87,7 +87,7 @@ if __name__ == "__main__":
     import transformers
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained("allenai/longformer-base-4096")
-    from src.llama_recipes.configs.datasets import biotriplex_dataset
+    from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
     dataset = BioTriplexDataset(dataset_config, tokenizer, "train")
     print(dataset[0])
