@@ -24,6 +24,9 @@ class ConcatDataset(Dataset):
             for k, v in sample.items():
                 print(k)
                 print(v)
+            for k, v in buffer.items():
+                print(k)
+                print(v)
             buffer = {k: v + sample[k] for k,v in buffer.items()}
 
             while len(next(iter(buffer.values()))) > self.chunk_size:
