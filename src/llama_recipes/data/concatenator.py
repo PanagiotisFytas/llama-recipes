@@ -6,6 +6,8 @@ from itertools import chain
 
 from torch.utils.data import Dataset
 
+from src.llama_recipes.utils.train_utils import print_model_size
+
 
 class ConcatDataset(Dataset):
     def __init__(self, dataset, chunk_size=4096):
@@ -21,6 +23,9 @@ class ConcatDataset(Dataset):
             }
 
         for sample in tqdm(self.dataset, desc="Preprocessing dataset", dynamic_ncols=True):
+            for k, v in sample.items():
+                print(k)
+                print(v)
             buffer = {k: v + sample[k] for k,v in buffer.items()}
 
             while len(next(iter(buffer.values()))) > self.chunk_size:
