@@ -90,13 +90,13 @@ if __name__ == "__main__":
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
     dataset = BioTriplexDataset(dataset_config, tokenizer, "train")
+    print(dataset[0]["input_ids"].shape)
+    print(dataset[0]["labels"].shape)
+    print(dataset[0]["attention_mask"].shape)
     print(dataset[0])
     print(tokenizer.decode(dataset[0]["input_ids"]))
     print(tokenizer.decode(dataset[0]["labels"]))
     print(dataset[0]["attention_mask"])
-    print(dataset[0]["input_ids"].shape)
-    print(dataset[0]["labels"].shape)
-    print(dataset[0]["attention_mask"].shape)
     print(dataset[0]["input_ids"].dtype)
     print(dataset[0]["labels"].dtype)
     print(dataset[0]["attention_mask"].dtype)
