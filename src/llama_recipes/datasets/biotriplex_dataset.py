@@ -49,7 +49,7 @@ class BioTriplexDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
-        IGNORE_INDEX = -100  # The default setting in CrossEntropyLoss
+        IGNORE_INDEX = self.tokenizer.pad_token #-100  # The default setting in CrossEntropyLoss
 
         item = self.data[index]
 
