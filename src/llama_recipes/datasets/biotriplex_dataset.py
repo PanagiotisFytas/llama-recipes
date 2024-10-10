@@ -75,8 +75,8 @@ class BioTriplexDataset(Dataset):
         labels[~label_mask] = IGNORE_INDEX
         example_mask = example_mask.float()
         label_mask = label_mask.float()
-        example[example == -100] = self.tokenizer.pad_token_id
-        labels[labels == -100] = self.tokenizer.pad_token_id
+        # example[example == -100] = self.tokenizer.pad_token_id
+        # labels[labels == -100] = self.tokenizer.pad_token_id
 
         return {
             "input_ids": example,
