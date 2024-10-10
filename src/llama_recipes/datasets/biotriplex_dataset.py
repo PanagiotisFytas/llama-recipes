@@ -80,6 +80,8 @@ class BioTriplexDataset(Dataset):
             "input_ids": example,
             "labels": labels,
             "attention_mask": example_mask,
+            "doc_key": item["doc_key"],
+            "label_mask": label_mask
         }
 
 
