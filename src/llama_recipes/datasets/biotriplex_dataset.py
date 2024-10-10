@@ -40,7 +40,7 @@ class BioTriplexDataset(Dataset):
                     "doc_key": sample["doc_key"] + f"_sentence_{idx}"
                 }
                 new_dataset.append(new_sample)
-        self.data = dataset
+        self.data = new_dataset
 
         self.max_words = max_words
         self.tokenizer = tokenizer
