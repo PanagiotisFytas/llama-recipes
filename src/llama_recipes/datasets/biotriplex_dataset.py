@@ -19,6 +19,8 @@ def triplets_to_json(triplets):
     return output
 
 
+INSTRUCTION = """Given a text, extract the gene-disease-relation triplets from the text in a json format."""
+
 class BioTriplexDataset(Dataset):
     def __init__(self, dataset_config, tokenizer, split_name, max_words=512):
         #self.data = json.load(open(dataset_config.data_path))
@@ -53,8 +55,8 @@ class BioTriplexDataset(Dataset):
 
         item = self.data[index]
 
-        #prompt = f"### Instruction:\n{item['instruction']}\n\n### Input:\n{item['input']}\n\n### Response:"
-        prompt = item['input']#f"item['input']\n\n"
+        prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{item['input']}\n\n### Response:"
+        # prompt = item['input']#f"item['input']\n\n"
 
         example = prompt + item["output"]
 #        print(example)
