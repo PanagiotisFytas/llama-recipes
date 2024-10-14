@@ -90,7 +90,7 @@ class BioTriplexDataset(Dataset):
 if __name__ == "__main__":
     import transformers
     from transformers import AutoTokenizer
-    tokenizer = AutoTokenizer.from_pretrained("allenai/longformer-base-4096")
+    tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
     dataset = BioTriplexDataset(dataset_config, tokenizer, "train")
