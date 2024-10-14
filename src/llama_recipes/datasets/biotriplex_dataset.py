@@ -19,7 +19,7 @@ def triplets_to_json(triplets):
     return output
 
 
-INSTRUCTION = """Given a text, extract the gene-disease-relation triplets from the text in a json format."""
+INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
 
 class BioTriplexDataset(Dataset):
     def __init__(self, dataset_config, tokenizer, split_name, max_words=512):
