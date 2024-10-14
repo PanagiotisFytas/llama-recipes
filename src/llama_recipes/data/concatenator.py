@@ -20,7 +20,6 @@ class ConcatDataset(Dataset):
             "labels": [],
             }
 
-        buffer = {k: torch.tensor(v) for k,v in buffer.items()}
         for sample in tqdm(self.dataset, desc="Preprocessing dataset", dynamic_ncols=True):
             # for k, v in sample.items():
             #     print(k)

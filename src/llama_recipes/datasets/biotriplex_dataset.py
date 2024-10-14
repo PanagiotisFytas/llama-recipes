@@ -79,9 +79,9 @@ class BioTriplexDataset(Dataset):
         # labels[labels == -100] = self.tokenizer.pad_token_id
 
         return {
-            "input_ids": example,
-            "labels": labels,
-            "attention_mask": example_mask,
+            "input_ids": example.tolist(),
+            "labels": labels.tolist(),
+            "attention_mask": example_mask.tolist(),
             # "doc_key": item["doc_key"],
             # "label_mask": label_mask
         }
