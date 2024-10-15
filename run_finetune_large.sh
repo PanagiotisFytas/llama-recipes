@@ -6,8 +6,8 @@ python recipes/quickstart/finetuning/finetuning.py \
     --batch_size_training 1 \
     --weight_decay 0.5 \
     --num_epochs 6 \
-    --dataset biotriplex_dataset
-    --context_length 1024 \
+    --dataset biotriplex_dataset \
+    --context_length 4150 \
 
 
     # best val loss is 0.0556
