@@ -55,7 +55,7 @@ class BioTriplexDataset(Dataset):
 
     def __getitem__(self, index):
         IGNORE_INDEX = -100  # The default setting in CrossEntropyLoss
-        slef.input_seen.add(index)
+        self.input_seen.add(index)
 
         item = self.data[index]
 
