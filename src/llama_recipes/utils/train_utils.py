@@ -131,16 +131,16 @@ def train(model, train_dataloader,eval_dataloader, tokenizer, optimizer, lr_sche
             pbar = tqdm(colour="blue", desc=f"Training Epoch: {epoch+1}", total=total_length, dynamic_ncols=True)
             with profile(train_config,local_rank) as profile_context:
                 for step, batch in enumerate(train_dataloader):
-                    print(f"step: {step}")
-                    print(f"batch: {batch}")
-                    print("batch size shapes: ", {k: v.shape for k, v in batch.items()})
-                    print("input ids: ", batch['input_ids'])
-                    print("attention mask: ", batch['attention_mask'])
-                    print("labels: ", batch['labels'])
-                    # print decoded batch to check if the input is correct
-                    for elem in batch['input_ids']:
-                        print(tokenizer.decode(elem, ))
-                    # assert False
+                    # print(f"step: {step}")
+                    # print(f"batch: {batch}")
+                    # print("batch size shapes: ", {k: v.shape for k, v in batch.items()})
+                    # print("input ids: ", batch['input_ids'])
+                    # print("attention mask: ", batch['attention_mask'])
+                    # print("labels: ", batch['labels'])
+                    # # print decoded batch to check if the input is correct
+                    # for elem in batch['input_ids']:
+                    #     print(tokenizer.decode(elem, ))
+                    # # assert False
                     total_train_steps += 1
                     # stop when the maximum number of training steps is reached
                     if train_config.max_train_step > 0 and total_train_steps > train_config.max_train_step:
