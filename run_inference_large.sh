@@ -13,5 +13,6 @@ In summary, the genotype distributions of the  AGT  M235T polymorphism influence
     --temperature 0.8 \
     --top_p 1 \
     --top_k 100 \
+    --min_new_tokens 10 \
     --enable_salesforce_content_safety False
 #    --prompt_file './test_biotriplex_prompt.txt'
