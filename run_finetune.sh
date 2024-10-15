@@ -6,5 +6,5 @@ python recipes/quickstart/finetuning/finetuning.py \
     --batch_size_training 1 \
     --weight_decay 0.2 \
     --num_epochs 6 \
-    --context_length 1024 \
+#    --context_length 1024 \
     --dataset biotriplex_dataset
