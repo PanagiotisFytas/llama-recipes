@@ -133,6 +133,10 @@ def train(model, train_dataloader,eval_dataloader, tokenizer, optimizer, lr_sche
                 for step, batch in enumerate(train_dataloader):
                     print(f"step: {step}")
                     print(f"batch: {batch}")
+                    print("batch size shapes: ", {k: v.shape for k, v in batch.items()})
+                    print("input ids: ", batch['input_ids'])
+                    print("attention mask: ", batch['attention_mask'])
+                    print("labels: ", batch['labels'])
                     # print decoded batch to check if the input is correct
                     for elem in batch['input_ids']:
                         print(tokenizer.decode(elem, ))
