@@ -13,6 +13,7 @@ python recipes/quickstart/inference/local_inference/inference.py \
     --max_new_tokens 4024 \
     --top_p 1 \
     --do_sample False \
+    --share_gradio True \
     --enable_salesforce_content_safety False
 #    --prompt_file './test_biotriplex_prompt.txt'
 #    --top_k 500 \
