@@ -9,7 +9,7 @@ python recipes/quickstart/finetuning/finetuning.py \
     --num_epochs 6 \
     --dataset biotriplex_dataset \
     --context_length 4150 \
-    --quantization True
+    --quantization '4bit'
 
 
 
