@@ -10,9 +10,9 @@ In summary, the genotype distributions of the  AGT  M235T polymorphism influence
     --model_name 'meta-llama/Llama-3.1-8B-Instruct' \
     --peft_model './my_lora_weights/3.1_large_biotrip_json_no_quant_weight_decay' \
     --max_new_tokens 4024 \
-    --temperature 0.8 \
     --top_p 1 \
-    --top_k 500 \
     --do_sample False \
     --enable_salesforce_content_safety False
 #    --prompt_file './test_biotriplex_prompt.txt'
+#    --top_k 500 \
+#    --temperature 0.8 \
