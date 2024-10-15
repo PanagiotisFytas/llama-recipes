@@ -9,7 +9,7 @@
 #### Response:" |
 python recipes/quickstart/inference/local_inference/inference.py \
     --model_name 'meta-llama/Llama-3.1-8B-Instruct' \
-    --peft_model './my_lora_weights/3.1_large_biotrip_json_no_quant_weight_decay' \
+    --peft_model './my_lora_weights/3.1_large_biotrip_json_no_quant_high_weight_decay' \
     --max_new_tokens 4024 \
     --top_p 1 \
     --do_sample False \
