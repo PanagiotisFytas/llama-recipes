@@ -47,6 +47,7 @@ class BioTriplexDataset(Dataset):
         self.max_words = max_words
         self.tokenizer = tokenizer
         self.num_truncated_examples = 0
+        self.longest_input = 0
 
     def __len__(self):
         return len(self.data)
@@ -65,6 +66,7 @@ class BioTriplexDataset(Dataset):
         example = self.tokenizer.encode(example)
         example.append(self.tokenizer.eos_token_id)
         example = torch.tensor(example, dtype=torch.int64)
+        self.longest_input = max(self.longest_input, example.shape[0])
         padding = self.max_words - example.shape[0]
         if padding > 0:
             example = torch.cat((example, torch.zeros(padding, dtype=torch.int64) - 1))
