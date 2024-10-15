@@ -48,12 +48,14 @@ class BioTriplexDataset(Dataset):
         self.tokenizer = tokenizer
         self.num_truncated_examples = 0
         self.longest_input = 0
+        self.input_seen = set()
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, index):
         IGNORE_INDEX = -100  # The default setting in CrossEntropyLoss
+        slef.input_seen.add(index)
 
         item = self.data[index]
 
