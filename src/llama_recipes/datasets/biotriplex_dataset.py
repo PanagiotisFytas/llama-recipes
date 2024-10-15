@@ -46,6 +46,7 @@ class BioTriplexDataset(Dataset):
 
         self.max_words = max_words
         self.tokenizer = tokenizer
+        self.num_truncated_examples = 0
 
     def __len__(self):
         return len(self.data)
@@ -69,6 +70,7 @@ class BioTriplexDataset(Dataset):
             example = torch.cat((example, torch.zeros(padding, dtype=torch.int64) - 1))
         elif padding < 0:
             example = example[: self.max_words]
+            self.num_truncated_examples += 1
         labels = copy.deepcopy(example)
         labels[: len(prompt)] = -1
         example_mask = example.ge(0)
@@ -95,7 +97,7 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
-    dataset = BioTriplexDataset(dataset_config, tokenizer, "train")
+    dataset = BioTriplexDataset(dataset_config, tokenizer, "train", max_words=10000)
     print(dataset[0]["input_ids"].shape)
     print(dataset[0]["labels"].shape)
     print(dataset[0]["attention_mask"].shape)
