@@ -140,7 +140,7 @@ def train(model, train_dataloader,eval_dataloader, tokenizer, optimizer, lr_sche
                     # print decoded batch to check if the input is correct
                     for elem in batch['input_ids']:
                         print(tokenizer.decode(elem, ))
-                    assert False
+                    # assert False
                     total_train_steps += 1
                     # stop when the maximum number of training steps is reached
                     if train_config.max_train_step > 0 and total_train_steps > train_config.max_train_step:
