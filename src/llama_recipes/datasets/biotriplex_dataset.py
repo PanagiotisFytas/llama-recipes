@@ -6,6 +6,8 @@ import torch
 # from sentencepiece import SentencePieceProcessor
 from torch.utils.data import Dataset
 
+from src.llama_recipes.utils.train_utils import print_model_size
+
 
 def triplets_to_json(triplets):
     triplets_dicts = []
@@ -126,6 +128,15 @@ if __name__ == "__main__":
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
     dataset = BioTriplexDataset(dataset_config, tokenizer, "train", max_words=4100)
+    # print number of positive and negative examples (with weight 1 and 0.1 respectively)
+    num_positive = 0
+    num_negative = 0
+    for i in range(len(dataset)):
+        if dataset[i]["weight"] == POSITIVE_WEIGHT:
+            num_positive += 1
+        else:
+            num_negative += 1
+    print(num_positive, num_negative)
     print(dataset[0]["input_ids"].shape)
     print(dataset[0]["labels"].shape)
     print(dataset[0]["attention_mask"].shape)
