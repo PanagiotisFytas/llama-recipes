@@ -20,6 +20,7 @@ def triplets_to_json(triplets):
 
 POSITIVE_WEIGHT = (153 + 317) / (153 * 2)
 NEGATIVE_WEIGHT = (153 + 317) / (317 * 2)
+REMOVE_ALL_NEGATIVES = False
 # INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
 INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked entities:
    - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
@@ -49,7 +50,8 @@ class BioTriplexDataset(Dataset):
                 }
                 new_dataset.append(new_sample)
         self.data = new_dataset
-
+        if REMOVE_ALL_NEGATIVES:
+            self.data = [item for item in self.data if item["output"] != "[]"]
         self.max_words = max_words
         self.tokenizer = tokenizer
         # self.num_truncated_examples = 0
