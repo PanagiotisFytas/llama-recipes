@@ -18,7 +18,8 @@ def triplets_to_json(triplets):
     output = json.dumps(triplets_dicts)
     return output
 
-
+POSITIVE_WEIGHT = 1.0
+NEGATIVE_WEIGHT = 0.1
 # INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
 INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked entities:
    - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
@@ -80,11 +81,11 @@ class BioTriplexDataset(Dataset):
         prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{item['input']}\n\n### Response:\n"
         # prompt = item['input']#f"item['input']\n\n"
 
-        # if item["output"] != "[]":
         example = prompt + item["output"]
-        # else:
-        #     example = prompt + "No triplets found."
-#        print(example)
+        if item["output"] != "[]":
+            weight = POSITIVE_WEIGHT
+        else:
+            weight = NEGATIVE_WEIGHT
         prompt = torch.tensor(self.tokenizer.encode(prompt), dtype=torch.int64)
         example = self.tokenizer.encode(example)
         example.append(self.tokenizer.eos_token_id)
@@ -112,6 +113,7 @@ class BioTriplexDataset(Dataset):
             "input_ids": example.tolist(),
             "labels": labels.tolist(),
             "attention_mask": example_mask.tolist(),
+            "weight": weight,
             # "doc_key": item["doc_key"],
             # "label_mask": label_mask
         }

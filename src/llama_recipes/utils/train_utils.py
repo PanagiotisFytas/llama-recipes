@@ -159,9 +159,17 @@ def train(model, train_dataloader,eval_dataloader, tokenizer, optimizer, lr_sche
                                 batch[key] = batch[key].to('xpu:0')
                             elif torch.cuda.is_available():
                                 batch[key] = batch[key].to('cuda:0')
+                    if "weight" in batch:
+                        weight = batch["weight"]
+                        del batch["weight"]
+                        # assert batch size is 1
+                        assert len(weight) == 1
+                    else:
+                        weight = 1.0
                     with autocast():
                         loss = model(**batch).loss
                     loss = loss / gradient_accumulation_steps
+                    loss = loss * weight
                     if train_config.save_metrics:
                         train_step_loss.append(loss.detach().float().item())
                         train_step_perplexity.append(float(torch.exp(loss.detach().float())))
