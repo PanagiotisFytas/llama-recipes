@@ -19,7 +19,12 @@ def triplets_to_json(triplets):
     return output
 
 
-INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
+# INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
+INSTRUCTION = """1. **Extract triplets**: Identify and extract sets of three linked entities:
+   - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
+   - **Human Disease**: A specific human disease or disorder name (e.g., *lung adenocarcinoma*, *coronary artery disease*).
+   - **Relation**: The type of relationship between the gene and the human disease. These relations of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
+    """
 
 class BioTriplexDataset(Dataset):
     def __init__(self, dataset_config, tokenizer, split_name, max_words=None):
