@@ -8,7 +8,7 @@ python recipes/quickstart/finetuning/finetuning.py \
     --weight_decay 0.2 \
     --num_epochs 6 \
     --dataset biotriplex_dataset \
-    --context_length 4150 \
+    --context_length 4350 \
     --quantization '4bit'
 
 
