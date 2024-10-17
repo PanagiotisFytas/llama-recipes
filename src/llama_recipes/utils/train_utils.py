@@ -379,11 +379,19 @@ def evaluation(model,train_config, eval_dataloader, local_rank, tokenizer, wandb
                         batch[key] = batch[key].to('xpu:0')
                     else:
                         batch[key] = batch[key].to('cuda:0')
+                if "weight" in batch:
+                    weight = batch["weight"]
+                    del batch["weight"]
+                    # assert batch size is 1
+                    assert len(weight) == 1
+                else:
+                    weight = 1.0
             # Ensure no gradients are computed for this scope to save memory
             with torch.no_grad():
                 # Forward pass and compute loss
                 outputs = model(**batch)
                 loss = outputs.loss
+                loss = loss * weight
                 if train_config.save_metrics:
                     val_step_loss.append(loss.detach().float().item())
                     val_step_perplexity.append(float(torch.exp(loss.detach().float())))
