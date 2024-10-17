@@ -20,11 +20,24 @@ def triplets_to_json(triplets):
 
 
 # INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
-INSTRUCTION = """1. **Extract triplets**: Identify and extract sets of three linked entities:
+INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked entities:
    - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
    - **Human Disease**: A specific human disease or disorder name (e.g., *lung adenocarcinoma*, *coronary artery disease*).
    - **Relation**: The type of relationship between the gene and the human disease. These relations of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
-    """
+
+
+### Guidelines:
+- Extract **only complete triplets** where a gene, a human disease, and a relation are clearly linked.
+- Ignore any entities or relations that do not form a complete triplet.
+- Abbreviations of disease names (e.g., *DMD* for *Duchenne muscular dystrophy*) and gene synonyms should be handled as separate entities.
+- Ignore gene from non-human species.
+- Ignore incomplete names of genes and gene families (e.g., *Wnt family genes*).
+- Ignore gene names that are part of the name or description of a biochemical mechanism or pathway (e.g., *Wnt/Beta-catenin pathway*).
+- Extract relations from the specific relationship types listed above. Words or phrases that correspond to the sense of the listed relation types should be extracted, even if they have different surface forms.
+- Do not extract relations that describe the relationship between any other pairs of entities (e.g., between a gene and another gene) or between a marked entity and an unmarked word or phrase.
+- Do not extract relations that do not describe the relationship between a marked gene and a marked human disease.
+- Extract only explict relations between a gene and a human disease. Do not extract implicit relations.
+"""
 
 class BioTriplexDataset(Dataset):
     def __init__(self, dataset_config, tokenizer, split_name, max_words=None):
@@ -64,13 +77,13 @@ class BioTriplexDataset(Dataset):
 
         item = self.data[index]
 
-        prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{item['input']}\n\n### Response:"
+        prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{item['input']}\n\n### Response:\n"
         # prompt = item['input']#f"item['input']\n\n"
 
-        if item["output"] != "[]":
-            example = prompt + item["output"]
-        else:
-            example = prompt + "No triplets found."
+        # if item["output"] != "[]":
+        example = prompt + item["output"]
+        # else:
+        #     example = prompt + "No triplets found."
 #        print(example)
         prompt = torch.tensor(self.tokenizer.encode(prompt), dtype=torch.int64)
         example = self.tokenizer.encode(example)
