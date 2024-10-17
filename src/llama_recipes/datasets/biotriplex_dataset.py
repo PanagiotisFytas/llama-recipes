@@ -67,7 +67,10 @@ class BioTriplexDataset(Dataset):
         prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{item['input']}\n\n### Response:"
         # prompt = item['input']#f"item['input']\n\n"
 
-        example = prompt + item["output"]
+        if item["output"] != "[]":
+            example = prompt + item["output"]
+        else:
+            example = prompt + "No triplets found."
 #        print(example)
         prompt = torch.tensor(self.tokenizer.encode(prompt), dtype=torch.int64)
         example = self.tokenizer.encode(example)
