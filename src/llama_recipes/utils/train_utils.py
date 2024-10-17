@@ -160,10 +160,10 @@ def train(model, train_dataloader,eval_dataloader, tokenizer, optimizer, lr_sche
                             elif torch.cuda.is_available():
                                 batch[key] = batch[key].to('cuda:0')
                     if "weight" in batch:
+                        assert len(weight) == 1
                         weight = batch["weight"].item()
                         del batch["weight"]
                         # assert batch size is 1
-                        assert len(weight) == 1
                     else:
                         weight = 1.0
                     with autocast():
@@ -380,10 +380,10 @@ def evaluation(model,train_config, eval_dataloader, local_rank, tokenizer, wandb
                     else:
                         batch[key] = batch[key].to('cuda:0')
             if "weight" in batch:
+                assert len(weight) == 1
                 weight = batch["weight"].item()
                 del batch["weight"]
                 # assert batch size is 1
-                assert len(weight) == 1
             else:
                 weight = 1.0
             # Ensure no gradients are computed for this scope to save memory
