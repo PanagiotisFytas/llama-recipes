@@ -6,8 +6,6 @@ import torch
 # from sentencepiece import SentencePieceProcessor
 from torch.utils.data import Dataset
 
-from src.llama_recipes.utils.train_utils import print_model_size
-
 
 def triplets_to_json(triplets):
     triplets_dicts = []
