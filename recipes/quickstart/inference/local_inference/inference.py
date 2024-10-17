@@ -62,6 +62,7 @@ def main(
         top_p,
         top_k,
         max_new_tokens,
+        length_penalty,
         **kwargs,
     ):
         safety_checker = get_safety_checker(
@@ -140,10 +141,10 @@ def main(
         ), f"Provided Prompt file does not exist {prompt_file}"
         with open(prompt_file, "r") as f:
             user_prompt = "\n".join(f.readlines())
-        inference(user_prompt, temperature, top_p, top_k, max_new_tokens)
+        inference(user_prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
     elif not sys.stdin.isatty():
         user_prompt = "\n".join(sys.stdin.readlines())
-        inference(user_prompt, temperature, top_p, top_k, max_new_tokens)
+        inference(user_prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
     else:
         try:
             import gradio as gr
@@ -167,6 +168,9 @@ def main(
                 ),
                 gr.components.Slider(
                     minimum=1, maximum=2000, step=1, value=200, label="Max tokens"
+                ),
+                gr.components.Slider(
+                    minimum=-10, maximum=10, step=1, value=1, label="Length penalty"
                 ),
             ],
             outputs=[

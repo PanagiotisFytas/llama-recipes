@@ -1,0 +1,30 @@
+### Instruction:
+**Extract triplets**: Identify and extract sets of three linked entities:
+   - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
+   - **Human Disease**: A specific human disease or disorder name (e.g., *lung adenocarcinoma*, *coronary artery disease*).
+   - **Relation**: The type of relationship between the gene and the human disease. These relations of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
+
+
+### Guidelines:
+- Extract **only complete triplets** where a gene, a human disease, and a relation are clearly linked.
+- Ignore any entities or relations that do not form a complete triplet.
+- Abbreviations of disease names (e.g., *DMD* for *Duchenne muscular dystrophy*) and gene synonyms should be handled as separate entities.
+- Ignore gene from non-human species.
+- Ignore incomplete names of genes and gene families (e.g., *Wnt family genes*).
+- Ignore gene names that are part of the name or description of a biochemical mechanism or pathway (e.g., *Wnt/Beta-catenin pathway*).
+- Extract relations from the specific relationship types listed above. Words or phrases that correspond to the sense of the listed relation types should be extracted, even if they have different surface forms.
+- Do not extract relations that describe the relationship between any other pairs of entities (e.g., between a gene and another gene) or between a marked entity and an unmarked word or phrase.
+- Do not extract relations that do not describe the relationship between a marked gene and a marked human disease.
+- Extract only explict relations between a gene and a human disease. Do not extract implicit relations.
+
+
+### Input:
+
+Title: EZH2-mediated loss of miR-622 determines CXCR4 activation in hepatocellular carcinoma.
+Abstract: The CXC chemokine receptor 4 (CXCR4) exerts a variety of functions at different steps of hepatocellular carcinoma (HCC) progression. The molecular mechanisms and therapeutic value of CXCR4 in the development of HCC remain undefined. Here we show that aberrant CXCR4 overexpression is associated with poor prognosis and aggressive characteristics of HCC. Suppression of CXCR4 activity via CXCR4 knockdown, AMD3100 or neutralizing antibody administration inhibits hepatoma cell tumorigenesis  in vitro  and  in vivo. CXCR4 overexpression displays the opposite effects. Using Mir library screening we identify miR-622 as a regulator of CXCR4. Further studies show that miR-622 directly target the 3\' untranslated region of CXCR4 and is transcriptionally repressed by EZH2-induced H3K27 trimethylation and promoter methylation. EZH2/miR-622 promotes tumorigenesis through CXCR4. EZH2-mediated loss of miR-622 is found to correlate with CXCR4 overexpression and unfavourable prognosis in HCC patients. This study establishes EZH2/miR-622/CXCR4 as a potential adverse prognostic factor and therapeutic target for HCC patients.
+
+ Chemokines and their receptors have key roles in tumorigenesis. Here, the authors demonstrate that CXRC4 is overexpressed in hepatocellular carcinoma and is associated with poor prognosis and, mechanistically CXCR4 is increased in expression via EZH2 repression of microRNA-622.
+
+
+### Response:
+[{"gene": "CXCR4", "disease": "hepatocellular carcinoma", "relation": "activation"}, {"gene": "CXC chemokine receptor 4", "disease": "hepatocellular carcinoma", "relation": "exerts a variety of functions"}, {"gene": "CXCR4", "disease": "hepatocellular carcinoma", "relation": "exerts a variety of functions"}, {"gene": "CXC chemokine receptor 4", "disease": "HCC", "relation": "exerts a variety of functions"}, {"gene": "CXCR4", "disease": "HCC", "relation": "exerts a variety of functions"}, {"gene": "CXCR4", "disease": "HCC", "relation": "therapeutic value"}, {"gene": "CXCR4", "disease": "HCC", "relation": "development"}, {"gene": "CXCR4", "disease": "HCC", "relation": "overexpression"}, {"gene": "CXCR4", "disease": "HCC", "relation": "poor prognosis"}, {"gene": "CXCR4", "disease": "HCC", "relation": "overexpression"}, {"gene": "CXCR4", "disease": "HCC", "relation": "unfavourable prognosis"}, {"gene": "EZH2", "disease": "HCC", "relation": "adverse prognostic factor"}, {"gene": "CXCR4", "disease": "HCC", "relation": "adverse prognostic factor"}, {"gene": "EZH2", "disease": "HCC", "relation": "therapeutic target"}, {"gene": "CXCR4", "disease": "HCC", "relation": "therapeutic target"}, {"gene": "CXRC4", "disease": "hepatocellular carcinoma", "relation": "overexpressed"}, {"gene": "CXRC4", "disease": "hepatocellular carcinoma", "relation": "poor prognosis"}]
