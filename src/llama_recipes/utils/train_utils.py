@@ -371,13 +371,6 @@ def evaluation(model,train_config, eval_dataloader, local_rank, tokenizer, wandb
                 if not train_config.enable_fsdp or local_rank==0:
                     print("max eval steps reached, stopping evaluation, total_eval_steps: ", total_eval_steps - 1)
                 break
-            if "weight" in batch:
-                weight = batch["weight"]
-                del batch["weight"]
-                # assert batch size is 1
-                assert len(weight) == 1
-            else:
-                weight = 1.0
             for key in batch.keys():
                 if train_config.enable_fsdp:
                     batch[key] = batch[key].to(local_rank)
@@ -386,6 +379,13 @@ def evaluation(model,train_config, eval_dataloader, local_rank, tokenizer, wandb
                         batch[key] = batch[key].to('xpu:0')
                     else:
                         batch[key] = batch[key].to('cuda:0')
+            if "weight" in batch:
+                weight = batch["weight"]
+                del batch["weight"]
+                # assert batch size is 1
+                assert len(weight) == 1
+            else:
+                weight = 1.0
             # Ensure no gradients are computed for this scope to save memory
             with torch.no_grad():
                 # Forward pass and compute loss
