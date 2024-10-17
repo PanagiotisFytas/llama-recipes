@@ -20,7 +20,7 @@ def triplets_to_json(triplets):
 
 POSITIVE_WEIGHT = (153 + 317) / (153 * 2)
 NEGATIVE_WEIGHT = (153 + 317) / (317 * 2)
-REMOVE_ALL_NEGATIVES = False
+REMOVE_ALL_NEGATIVES = True
 # INSTRUCTION = """Given a text, extract the gene-disease-relation triplets in a json format."""
 INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked entities:
    - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
