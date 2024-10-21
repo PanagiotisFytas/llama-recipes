@@ -1,6 +1,6 @@
 #export 'PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True'
 #export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128'
-python recipes/quickstart/finetuning/finetuning.py \
+python -m torch.distributed.launch recipes/quickstart/finetuning/finetuning.py \
     --use_peft \
     --peft_method lora \
     --model_name 'meta-llama/Llama-3.2-3B-Instruct' \
