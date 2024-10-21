@@ -1,5 +1,5 @@
-export 'PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True'
-export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:21'
+#export 'PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True'
+#export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128'
 python recipes/quickstart/finetuning/finetuning.py \
     --use_peft \
     --peft_method lora \
@@ -10,8 +10,9 @@ python recipes/quickstart/finetuning/finetuning.py \
     --weight_decay 0.2 \
     --num_epochs 6 \
     --dataset biotriplex_dataset \
-    --context_length 21000 \
-    --quantization '4bit'
+    --context_length 20000 \
+    --quantization '4bit' \
+    --enable_fsdp
 
 
 
