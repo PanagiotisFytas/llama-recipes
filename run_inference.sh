@@ -14,4 +14,5 @@ python recipes/quickstart/inference/local_inference/inference.py \
     --top_p 1 \
     --do_sample False \
     --share_gradio True \
-    --enable_salesforce_content_safety False
+    --enable_salesforce_content_safety False \
+    --full_dataset  ## for inference on bio-triplex

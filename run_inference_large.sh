@@ -13,9 +13,9 @@ python recipes/quickstart/inference/local_inference/inference.py \
     --quantization '4bit' \
     --max_new_tokens 4024 \
     --top_p 1 \
-    --do_sample False \
+    --temperature 0.01 \
     --share_gradio True \
-    --enable_salesforce_content_safety False
+    --enable_salesforce_content_safety False \
+    --full_dataset  ## for inference on bio-triplex
 #    --prompt_file './test_biotriplex_prompt.txt'
 #    --top_k 500 \
-#    --temperature 0.8 \
