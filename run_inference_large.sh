@@ -18,5 +18,5 @@ python recipes/quickstart/inference/local_inference/inference.py \
     --share_gradio True \
     --enable_salesforce_content_safety False \
     --full_dataset \
-    --dataset_mode 'val' ## for inference on bio-triplex
+    --dataset_mode 'test' ## for inference on bio-triplex
 #    --prompt_file './test_biotriplex_prompt.txt'
