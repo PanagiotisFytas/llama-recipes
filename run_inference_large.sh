@@ -9,7 +9,7 @@
 #### Response:" |
 python recipes/quickstart/inference/local_inference/inference.py \
     --model_name 'meta-llama/Llama-3.1-8B-Instruct' \
-    --peft_model './my_lora_weights/3.1_large_biotrip_json_no_quant_high_weight_decay__upweigh' \
+    --peft_model './my_lora_weights/3.1_8b_biotrip_json_no_quant_high_weight_decay_long_context' \
     --quantization '4bit' \
     --max_new_tokens 8024 \
     --top_p 1 \
@@ -18,5 +18,5 @@ python recipes/quickstart/inference/local_inference/inference.py \
     --share_gradio True \
     --enable_salesforce_content_safety False \
     --full_dataset \
-    --dataset_mode 'train' ## for inference on bio-triplex
+    --dataset_mode 'val' ## for inference on bio-triplex
 #    --prompt_file './test_biotriplex_prompt.txt'
