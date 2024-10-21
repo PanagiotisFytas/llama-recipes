@@ -143,12 +143,17 @@ if __name__ == "__main__":
                 num_negative += 1
         print("MODE:", mode)
         print(num_positive, num_negative)
-        print(dataset[0]["input_ids"].shape)
-        print(dataset[0]["labels"].shape)
-        print(dataset[0]["attention_mask"].shape)
-        print(tokenizer.decode(dataset[0]["input_ids"]))
-        print(tokenizer.decode(dataset[0]["labels"]))
-        print(dataset[0]["attention_mask"])
-        print(dataset[0]["input_ids"].dtype)
-        print(dataset[0]["labels"].dtype)
-        print(dataset[0]["attention_mask"].dtype)
+        # print len of longest input
+        max_len = 0
+        for i in range(len(dataset)):
+            max_len = max(max_len, len(dataset[i]["input_ids"]))
+        print(max_len)
+        # print(dataset[0]["input_ids"].shape)
+        # print(dataset[0]["labels"].shape)
+        # print(dataset[0]["attention_mask"].shape)
+        # print(tokenizer.decode(dataset[0]["input_ids"]))
+        # print(tokenizer.decode(dataset[0]["labels"]))
+        # print(dataset[0]["attention_mask"])
+        # print(dataset[0]["input_ids"].dtype)
+        # print(dataset[0]["labels"].dtype)
+        # print(dataset[0]["attention_mask"].dtype)
