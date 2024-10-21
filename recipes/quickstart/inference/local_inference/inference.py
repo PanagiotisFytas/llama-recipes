@@ -15,6 +15,8 @@ from llama_recipes.inference.model_utils import load_model, load_peft_model
 from llama_recipes.inference.safety_utils import AgentType, get_safety_checker
 from transformers import AutoTokenizer
 
+from src.llama_recipes.configs.datasets import biotriplex_dataset
+
 
 def main(
     model_name,
@@ -38,6 +40,7 @@ def main(
     max_padding_length: int = None,  # the max padding length to be used with tokenizer padding the prompts.
     use_fast_kernels: bool = False,  # Enable using SDPA from PyTroch Accelerated Transformers, make use Flash Attention and Xformer memory-efficient kernels
     share_gradio: bool = False,  # Enable endpoint creation for gradio.live
+    full_dataset: bool = False,  # Enable full dataset inference
     **kwargs,
 ):
     # Set the seeds for reproducibility
@@ -145,6 +148,16 @@ def main(
     elif not sys.stdin.isatty():
         user_prompt = "\n".join(sys.stdin.readlines())
         inference(user_prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
+    elif full_dataset:
+        outputs = {}
+        from llama_recipes.datasets.biotriplex_dataset import BiotriplexDataset
+        dataset = BiotriplexDataset(biotriplex_dataset, tokenizer, "val", max_words=5000)
+        for doc_key, prompt in dataset.get_all_input_prompts().items():
+            output = inference(prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
+            outputs[doc_key] = output
+        # Save the outputs to a file
+        with open("llama3_biotriplex_val_outputs.json", "w") as f:
+            json.dump(outputs, f)
     else:
         try:
             import gradio as gr

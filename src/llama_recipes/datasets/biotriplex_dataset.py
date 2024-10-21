@@ -35,9 +35,14 @@ class BioTriplexDataset(Dataset):
         if split_name == "train":
             with open(dataset_config.data_path + "train.txt", "r") as f:
                 dataset = f.readlines()
-        else:
+        elif split_name == "val":
             with open(dataset_config.data_path + "val.txt", "r") as f:
                 dataset = f.readlines()
+        elif split_name == "test":
+            with open(dataset_config.data_path + "test.txt", "r") as f:
+                dataset = f.readlines()
+        else:
+            raise ValueError(f"Invalid split name: {split_name}")
         dataset = [json.loads(line) for line in dataset]
         # dataset is split into sentences I want to treat each sentence as a separate example
         new_dataset = []
@@ -58,6 +63,18 @@ class BioTriplexDataset(Dataset):
         # self.longest_input = 0
         # self.input_seen = set()
 
+    def get_all_input_prompts(self):
+        prompts = {}
+        for item in self.data:
+            prompt = self.input_to_prompt(item["input"])
+            prompts[item["doc_key"]] = prompt
+        return prompts
+
+    @staticmethod
+    def input_to_prompt(input_text):
+        prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
+        return prompt
+
     def __len__(self):
         return len(self.data)
 
@@ -67,7 +84,7 @@ class BioTriplexDataset(Dataset):
 
         item = self.data[index]
 
-        prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{item['input']}\n\n### Response:\n"
+        prompt = self.input_to_prompt(item["input"])
         # prompt = item['input']#f"item['input']\n\n"
 
         example = prompt + item["output"]
