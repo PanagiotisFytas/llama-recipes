@@ -132,7 +132,7 @@ if __name__ == "__main__":
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
     for mode in "train", "val", "test":
-        dataset = BioTriplexDataset(dataset_config, tokenizer, "train", max_words=None)
+        dataset = BioTriplexDataset(dataset_config, tokenizer, split_name, max_words=None)
         # print number of positive and negative examples (with weight 1 and 0.1 respectively)
         num_positive = 0
         num_negative = 0
