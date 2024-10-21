@@ -15,8 +15,6 @@ from llama_recipes.inference.model_utils import load_model, load_peft_model
 from llama_recipes.inference.safety_utils import AgentType, get_safety_checker
 from transformers import AutoTokenizer
 
-from src.llama_recipes.configs.datasets import biotriplex_dataset
-
 
 def main(
     model_name,
