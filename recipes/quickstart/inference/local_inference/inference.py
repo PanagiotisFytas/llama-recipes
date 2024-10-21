@@ -149,6 +149,7 @@ def main(
     elif full_dataset:
         outputs = {}
         from llama_recipes.datasets.biotriplex_dataset import BioTriplexDataset
+        from llama_recipes.configs.datasets import biotriplex_dataset
         dataset = BioTriplexDataset(biotriplex_dataset, tokenizer, "val", max_words=5000)
         for doc_key, prompt in dataset.get_all_input_prompts().items():
             output = inference(prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
