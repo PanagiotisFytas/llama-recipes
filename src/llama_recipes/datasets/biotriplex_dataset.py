@@ -131,23 +131,24 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
-    dataset = BioTriplexDataset(dataset_config, tokenizer, "train", max_words=4100)
-    # print number of positive and negative examples (with weight 1 and 0.1 respectively)
-    num_positive = 0
-    num_negative = 0
-    for i in range(len(dataset)):
-        if dataset[i]["weight"] == POSITIVE_WEIGHT:
-            num_positive += 1
-        else:
-            num_negative += 1
-    print(num_positive, num_negative)
-    print(dataset[0]["input_ids"].shape)
-    print(dataset[0]["labels"].shape)
-    print(dataset[0]["attention_mask"].shape)
-    print(dataset[0])
-    print(tokenizer.decode(dataset[0]["input_ids"]))
-    print(tokenizer.decode(dataset[0]["labels"]))
-    print(dataset[0]["attention_mask"])
-    print(dataset[0]["input_ids"].dtype)
-    print(dataset[0]["labels"].dtype)
-    print(dataset[0]["attention_mask"].dtype)
+    for mode in "train", "val", "test":
+        dataset = BioTriplexDataset(dataset_config, tokenizer, "train", max_words=10000)
+        # print number of positive and negative examples (with weight 1 and 0.1 respectively)
+        num_positive = 0
+        num_negative = 0
+        for i in range(len(dataset)):
+            if dataset[i]["weight"] == POSITIVE_WEIGHT:
+                num_positive += 1
+            else:
+                num_negative += 1
+        print("MODE:", mode)
+        print(num_positive, num_negative)
+        print(dataset[0]["input_ids"].shape)
+        print(dataset[0]["labels"].shape)
+        print(dataset[0]["attention_mask"].shape)
+        print(tokenizer.decode(dataset[0]["input_ids"]))
+        print(tokenizer.decode(dataset[0]["labels"]))
+        print(dataset[0]["attention_mask"])
+        print(dataset[0]["input_ids"].dtype)
+        print(dataset[0]["labels"].dtype)
+        print(dataset[0]["attention_mask"].dtype)
