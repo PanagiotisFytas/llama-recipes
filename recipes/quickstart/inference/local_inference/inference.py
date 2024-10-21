@@ -15,6 +15,8 @@ from llama_recipes.inference.model_utils import load_model, load_peft_model
 from llama_recipes.inference.safety_utils import AgentType, get_safety_checker
 from transformers import AutoTokenizer
 
+import tqdm
+
 
 def main(
     model_name,
@@ -151,7 +153,7 @@ def main(
         from llama_recipes.datasets.biotriplex_dataset import BioTriplexDataset
         from llama_recipes.configs.datasets import biotriplex_dataset
         dataset = BioTriplexDataset(biotriplex_dataset, tokenizer, "val", max_words=5000)
-        for doc_key, prompt in dataset.get_all_input_prompts().items():
+        for doc_key, prompt in tqdm.tqdm(dataset.get_all_input_prompts().items()):
             output = inference(prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
             outputs[doc_key] = output
         # Save the outputs to a file
