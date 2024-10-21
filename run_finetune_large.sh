@@ -11,7 +11,7 @@ python -m torch.distributed.launch recipes/quickstart/finetuning/finetuning.py \
     --num_epochs 6 \
     --dataset biotriplex_dataset \
     --context_length 21000 \
-    --quantization '8bit' \
+    --quantization '4bit' \
     --enable_fsdp
 
 
