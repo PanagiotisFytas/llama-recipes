@@ -159,7 +159,7 @@ def main(
             output = inference(prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
             outputs[doc_key] = output
         # Save the outputs to a file
-        with open("llama3_biotriplex_val_outputs.json", "w") as f:
+        with open(f"llama3_biotriplex_{dataset_mode}_outputs.json", "w") as f:
             json.dump(outputs, f)
     else:
         try:
