@@ -41,6 +41,7 @@ def main(
     use_fast_kernels: bool = False,  # Enable using SDPA from PyTroch Accelerated Transformers, make use Flash Attention and Xformer memory-efficient kernels
     share_gradio: bool = False,  # Enable endpoint creation for gradio.live
     full_dataset: bool = False,  # Enable full dataset inference
+    dataset_mode: str = "val",  # The dataset mode to be used with full dataset inference
     **kwargs,
 ):
     # Set the seeds for reproducibility
@@ -153,7 +154,7 @@ def main(
         from llama_recipes.datasets.biotriplex_dataset import BioTriplexDataset
         from llama_recipes.configs.datasets import biotriplex_dataset
         import json
-        dataset = BioTriplexDataset(biotriplex_dataset, tokenizer, "val", max_words=50000)
+        dataset = BioTriplexDataset(biotriplex_dataset, tokenizer, dataset_mode, max_words=50000)
         for doc_key, prompt in tqdm.tqdm(dataset.get_all_input_prompts().items()):
             output = inference(prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
             outputs[doc_key] = output
