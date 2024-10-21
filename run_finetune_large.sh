@@ -1,4 +1,5 @@
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export 'PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True'
+export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:56'
 python recipes/quickstart/finetuning/finetuning.py \
     --use_peft \
     --peft_method lora \
