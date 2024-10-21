@@ -154,7 +154,7 @@ def main(
         from llama_recipes.datasets.biotriplex_dataset import BioTriplexDataset
         from llama_recipes.configs.datasets import biotriplex_dataset
         import json
-        dataset = BioTriplexDataset(biotriplex_dataset, tokenizer, dataset_mode, max_words=50000)
+        dataset = BioTriplexDataset(biotriplex_dataset, tokenizer, dataset_mode, max_words=None)
         for doc_key, prompt in tqdm.tqdm(dataset.get_all_input_prompts().items()):
             output = inference(prompt, temperature, top_p, top_k, max_new_tokens, length_penalty)
             outputs[doc_key] = output
