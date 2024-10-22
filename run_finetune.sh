@@ -3,8 +3,8 @@ export 'PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128'
 python recipes/quickstart/finetuning/finetuning.py \
     --use_peft \
     --peft_method lora \
-    --model_name 'meta-llama/Llama-3.2-3B-Instruct' \
-    --output_dir './my_lora_weights/3.2-3B_biotrip_new_template' \
+    --model_name 'meta-llama/Llama-3.2-1B-Instruct' \
+    --output_dir './my_lora_weights/3.2-1B_biotrip_new_template' \
     --batch_size_training 1 \
     --batching_strategy "padding" \
     --weight_decay 0.2 \
