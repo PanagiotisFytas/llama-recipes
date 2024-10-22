@@ -6,6 +6,8 @@ import torch
 # from sentencepiece import SentencePieceProcessor
 from torch.utils.data import Dataset
 
+from tools.benchmarks.inference.cloud.azure.chat_azure_api_benchmark import SYS_PROMPT
+
 
 def triplets_to_json(triplets):
     triplets_dicts = []
@@ -28,6 +30,11 @@ INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked
    - **Relation**: The relationship between the gene and the human disease. These relation types of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
 """
 
+SYS_PROMPT = """**Extract triplets**: Identify and extract sets of three linked entities in a json format:
+   - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
+   - **Human Disease**: A specific human disease or disorder name (e.g., *lung adenocarcinoma*, *coronary artery disease*).
+   - **Relation**: The relationship between the gene and the human disease. These relation types of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
+"""
 class BioTriplexDataset(Dataset):
     def __init__(self, dataset_config, tokenizer, split_name, max_words=None):
         #self.data = json.load(open(dataset_config.data_path))
@@ -70,9 +77,10 @@ class BioTriplexDataset(Dataset):
             prompts[item["doc_key"]] = prompt
         return prompts
 
-    @staticmethod
-    def input_to_prompt(input_text):
-        prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
+    def input_to_prompt(self, input_text):
+        # prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
+        prompt = f"<|start_header_id|>system<|end_header_id|>{SYS_PROMPT}<|eot_id|><|start_header_id|>user<|end_header_id|>" +\
+            f"{input_text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>### Response:\n"
         return prompt
 
     def __len__(self):
