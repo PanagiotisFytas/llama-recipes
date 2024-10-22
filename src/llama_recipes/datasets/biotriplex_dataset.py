@@ -6,8 +6,6 @@ import torch
 # from sentencepiece import SentencePieceProcessor
 from torch.utils.data import Dataset
 
-from tools.benchmarks.inference.cloud.azure.chat_azure_api_benchmark import SYS_PROMPT
-
 
 def triplets_to_json(triplets):
     triplets_dicts = []
