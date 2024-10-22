@@ -13,7 +13,7 @@ python recipes/quickstart/inference/local_inference/inference.py \
     --quantization '4bit' \
     --max_new_tokens 8024 \
     --top_p 1 \
-    --top_k 200 \
+    --top_k 100 \
     --temperature 0.01 \
     --share_gradio True \
     --enable_salesforce_content_safety False \
