@@ -8,8 +8,8 @@
 #
 #### Response:" |
 python recipes/quickstart/inference/local_inference/inference.py \
-    --model_name 'meta-llama/Llama-3.2-1B-Instruct' \
-    --peft_model './my_lora_weights/3.2-1B_biotrip_new_template' \
+    --model_name 'meta-llama/Llama-3.2-3B-Instruct' \
+    --peft_model './my_lora_weights/3.2-3B_biotrip_new_template' \
     --quantization '4bit' \
     --max_new_tokens 8024 \
     --top_p 1 \
