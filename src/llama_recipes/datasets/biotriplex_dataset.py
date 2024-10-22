@@ -28,11 +28,7 @@ INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked
    - **Relation**: The relationship between the gene and the human disease. These relation types of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
 """
 
-SYS_PROMPT = """**Extract triplets**: Identify and extract sets of three linked entities in a json format:
-   - **Gene**: A human gene name, symbol (e.g., *SLC02A1*, *PCSK5*) or synonym.
-   - **Human Disease**: A specific human disease or disorder name (e.g., *lung adenocarcinoma*, *coronary artery disease*).
-   - **Relation**: The relationship between the gene and the human disease. These relation types of interest are *pathological role*, *causative activation*, *causative inhibition*, *causative mutation*, *modulator decrease disease*, *modulator increase disease*, *biomarker*, *associated mutation*, *dysregulation*, *increased expression*, *decreased expression*, *epigenetic marker*, *therapy resistance*, *prognostic indicator*, *negative prognostic marker*, *positive prognostic marker*, *therapeutic target*, *diagnostic tool*, *genetic susceptibility*.
-"""
+SYS_PROMPT = """You are a helpful assistant that extracts the list of {"gene":<gene_text>, "disease":<disease_text", "relation":<relation_text>} triplets from the given text. If no triplets are found, please provide an empty list. """
 class BioTriplexDataset(Dataset):
     def __init__(self, dataset_config, tokenizer, split_name, max_words=None):
         #self.data = json.load(open(dataset_config.data_path))
@@ -78,7 +74,8 @@ class BioTriplexDataset(Dataset):
     def input_to_prompt(self, input_text):
         # prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
         prompt = f"<|start_header_id|>system<|end_header_id|>{SYS_PROMPT}<|eot_id|><|start_header_id|>user<|end_header_id|>" +\
-            f"{input_text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>### Response:\n"
+            f"### Instruction:\n{INSTRUCTION}\n### Input:\n{input_text}\n" +\
+            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
         return prompt
 
     def __len__(self):
@@ -93,7 +90,8 @@ class BioTriplexDataset(Dataset):
         prompt = self.input_to_prompt(item["input"])
         # prompt = item['input']#f"item['input']\n\n"
 
-        example = prompt + item["output"]
+        # example = prompt + item["output"]
+        example = prompt + "\n### Response:\n" + item["output"]
         if item["output"] != "[]":
             weight = POSITIVE_WEIGHT
         else:
