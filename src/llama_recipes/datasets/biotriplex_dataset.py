@@ -99,9 +99,9 @@ class BioTriplexDataset(Dataset):
     def input_to_prompt(self, input_text):
         # prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
         prompt_prefix = f"<|start_header_id|>system<|end_header_id|>{SYS_PROMPT}<|eot_id|><|start_header_id|>user<|end_header_id|>" +\
-            f"### Instruction:\n{INSTRUCTION}\n### Input:\n"
+            f"### Instruction:\n{INSTRUCTION}\n### Input:"
         prompt_input = input_text
-        prompt_suffix = "\n<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+        prompt_suffix = "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
         return prompt_prefix, prompt_input, prompt_suffix
 
     @staticmethod
