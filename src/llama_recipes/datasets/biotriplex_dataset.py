@@ -175,6 +175,8 @@ class BioTriplexDataset(Dataset):
             labels[:len(prompt_prefix)] = -1
             labels[len(prompt_prefix): len(prompt_prefix) + len(prompt_input)] = self.no_entity_special_token_id
             print(item["entities"])
+            import time
+            time.sleep(10)
             genes_indexes, diseases_indexes, relations_indexes = self.get_entity_indexes(item["entities"],
                                                                                          prompt_offsets_mapping)
             labels[genes_indexes] = self.gene_special_token_id
