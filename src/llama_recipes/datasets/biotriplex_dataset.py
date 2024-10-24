@@ -192,6 +192,10 @@ if __name__ == "__main__":
     import transformers
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
+    tokenizer.add_special_tokens({"additional_special_tokens": ["<|gene token|>",
+                                                                "<|disease token|>",
+                                                                "<|relation token|>",
+                                                                "<|no entity token|>"]})
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
     for mode in "val", : #"train", "test":
