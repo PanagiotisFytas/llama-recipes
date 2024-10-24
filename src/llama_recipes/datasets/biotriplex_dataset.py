@@ -53,7 +53,7 @@ class BioTriplexDataset(Dataset):
                     "input": sentence,
                     "output": triplets_to_json(sample["triplets_text"][idx]),
                     "doc_key": sample["doc_key"] + f"_sentence_{idx}",
-                    "entities": self.correct_entity_char_index(sample["ner"][idx], sample["ner"]["sentences"], idx)
+                    "entities": self.correct_entity_char_index(sample["ner"][idx], sample["sentences"], idx)
                 }
                 new_dataset.append(new_sample)
         self.data = new_dataset
