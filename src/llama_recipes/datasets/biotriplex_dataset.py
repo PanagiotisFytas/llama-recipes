@@ -120,12 +120,7 @@ class BioTriplexDataset(Dataset):
             while entity_idx < len(entities):
                 entity = entities[entity_idx]
                 start_char, end_char = entity[:2]
-                # print(f"entity_idx {entity_idx}, start_char {start_char}, end_char {end_char}, start {start}, end {end}")
-                # print("entity", entity)
                 if start <= start_char < end or start < end_char <= end or (start_char < start and end_char > end):
-                    print("Matched entity", entity)
-                    print("Matched token", idx + index_offset)
-                    print("cords: ", start_char, end_char, start, end)
                     if entity[2] == "GENE":
                         genes_indexes.append(idx + index_offset)
                     elif entity[2] == "DISEASE":
@@ -177,17 +172,12 @@ class BioTriplexDataset(Dataset):
         labels = copy.deepcopy(example)
         if self.entity_tokens_targets:
             prompt_prefix = self.tokenizer.encode(prompt_prefix)
-            # print("prompt_input", prompt_input)
             prompt_input = self.tokenizer(prompt_input, add_special_tokens=False, return_offsets_mapping=True)
             prompt_offsets_mapping = prompt_input["offset_mapping"]
-            # print("prompt_input", prompt_input)
             prompt_input = prompt_input["input_ids"]
             prompt_suffix = self.tokenizer.encode(prompt_suffix, add_special_tokens=False)
             labels[:len(prompt_prefix)] = -1
             labels[len(prompt_prefix): len(prompt_prefix) + len(prompt_input)] = self.no_entity_special_token_id
-            # print(item["entities"])
-            # import time
-            # time.sleep(10)
             genes_indexes, diseases_indexes, relations_indexes = self.get_entity_indexes(item["entities"],
                                                                                          prompt_offsets_mapping,
                                                                                          index_offset=len(prompt_prefix)
@@ -209,9 +199,10 @@ class BioTriplexDataset(Dataset):
         # example[example == -100] = self.tokenizer.pad_token_id
         # labels[labels == -100] = self.tokenizer.pad_token_id
 
-        # print each word with its label and token id
+        # print each word with its label and token id if labels != -100
         for i in range(len(example)):
-            print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
+            if labels[i].item() != -100:
+                print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
 
 
         return {
