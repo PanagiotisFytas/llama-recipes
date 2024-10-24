@@ -66,7 +66,7 @@ class BioTriplexDataset(Dataset):
         # self.longest_input = 0
         # self.input_seen = set()
         self.entity_tokens_targets = entity_tokens_targets
-        self.special_tokens = sepcial_tokens
+        self.special_tokens = special_tokens
         if entity_tokens_targets:
             if special_tokens:
                 self.gene_special_token_id = tokenizer.vocab['<|gene token|>']
