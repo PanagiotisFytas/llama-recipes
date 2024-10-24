@@ -209,6 +209,8 @@ class BioTriplexDataset(Dataset):
         # print the text and type of all entities
         for entity in item["entities"]:
             print(item["input"][entity[0]: entity[1]], entity[2])
+
+        assert len(example) == len(labels)
         return {
             "input_ids": example.tolist(),
             "labels": labels.tolist(),
