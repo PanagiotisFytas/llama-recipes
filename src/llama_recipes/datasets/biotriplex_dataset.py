@@ -200,7 +200,7 @@ class BioTriplexDataset(Dataset):
         # labels[labels == -100] = self.tokenizer.pad_token_id
 
         # print each word with its label and token id if labels != -100
-        for i in range(len(prompt)):
+        for i in range(len(self.tokenizer.decode(prompt))):
             if labels[i].item() != -100:
                 print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
 
