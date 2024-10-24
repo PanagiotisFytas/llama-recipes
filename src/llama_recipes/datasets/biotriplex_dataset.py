@@ -204,7 +204,11 @@ class BioTriplexDataset(Dataset):
             if labels[i].item() not in [-1, -100, 128259]:
                 print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
 
-
+        # print doc_key
+        print(item["doc_key"])
+        # print the text and type of all entities
+        for entity in item["entities"]:
+            print(item["input"][entity[0]: entity[1]], entity[2])
         return {
             "input_ids": example.tolist(),
             "labels": labels.tolist(),
