@@ -192,6 +192,7 @@ class BioTriplexDataset(Dataset):
                                                                                          prompt_offsets_mapping,
                                                                                          index_offset=len(prompt_prefix)
                                                                                          )
+            assert len(prompt_prefix) + len(prompt_input) + len(prompt_suffix) == len(self.tokenizer.encode(prompt))
             labels[genes_indexes] = self.gene_special_token_id
             labels[diseases_indexes] = self.disease_special_token_id
             labels[relations_indexes] = self.relation_special_token_id
