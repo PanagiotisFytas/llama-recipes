@@ -30,7 +30,7 @@ INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked
 
 SYS_PROMPT = """You are a helpful assistant that extracts the list of {"gene":<gene_text>, "disease":<disease_text", "relation":<relation_text>} triplets from the given text. If no triplets are found, please provide an empty list. """
 class BioTriplexDataset(Dataset):
-    def __init__(self, dataset_config, tokenizer, split_name, max_words=None):
+    def __init__(self, dataset_config, tokenizer, split_name, max_words=None, entity_tokens_targets=False):
         #self.data = json.load(open(dataset_config.data_path))
 
         if split_name == "train":
@@ -52,7 +52,8 @@ class BioTriplexDataset(Dataset):
                 new_sample = {
                     "input": sentence,
                     "output": triplets_to_json(sample["triplets_text"][idx]),
-                    "doc_key": sample["doc_key"] + f"_sentence_{idx}"
+                    "doc_key": sample["doc_key"] + f"_sentence_{idx}",
+                    "entities": self.correct_entity_char_index(sample["ner"][idx], sample["ner"]["sentences"], idx)
                 }
                 new_dataset.append(new_sample)
         self.data = new_dataset
@@ -63,6 +64,21 @@ class BioTriplexDataset(Dataset):
         # self.num_truncated_examples = 0
         # self.longest_input = 0
         # self.input_seen = set()
+        self.entity_tokens_targets = entity_tokens_targets
+        if entity_tokens_targets:
+            self.gene_special_token_id = tokenizer.vocab['<|gene token|>']
+            self.disease_special_token_id = tokenizer.vocab['<|disease token|>']
+            self.relation_special_token_id = tokenizer.vocab['<|relation token|>']
+            self.no_entity_special_token_id = tokenizer.vocab['<|no entity token|>']
+
+    @staticmethod
+    def correct_entity_char_index(entities, sentences, sentence_idx):
+        # correct entity character indexes to be relative to the sentence and not the whole text
+        offset = sum([len(sentence) for sentence in sentences[:sentence_idx]])
+        for entity in entities:
+            entity[0] -= offset
+            entity[1] -= offset
+        return entities
 
     def get_all_input_prompts(self):
         prompts = {}
@@ -73,10 +89,38 @@ class BioTriplexDataset(Dataset):
 
     def input_to_prompt(self, input_text):
         # prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
-        prompt = f"<|start_header_id|>system<|end_header_id|>{SYS_PROMPT}<|eot_id|><|start_header_id|>user<|end_header_id|>" +\
-            f"### Instruction:\n{INSTRUCTION}\n### Input:\n{input_text}\n" +\
-            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
-        return prompt
+        prompt_prefix = f"<|start_header_id|>system<|end_header_id|>{SYS_PROMPT}<|eot_id|><|start_header_id|>user<|end_header_id|>" +\
+            f"### Instruction:\n{INSTRUCTION}\n### Input:\n"
+        prompt_input = input_text
+        prompt_suffix = "\n<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+        return prompt_prefix, prompt_input, prompt_suffix
+
+    @staticmethod
+    def get_entity_indexes(entities, prompt_offsets_mapping):
+        genes_indexes = []
+        diseases_indexes = []
+        relations_indexes = []
+        entity_idx = 0
+        for idx, (start, end) in enumerate(prompt_offsets_mapping):
+            while entity_idx < len(entities):
+                entity = entities[entity_idx]
+                start_char, end_char = entity[:2]
+                if start <= start_char < end or start <= end_char < end or (start_char < start and end_char > end):
+                    if entity[2] == "GENE":
+                        genes_indexes.append(idx)
+                    elif entity[2] == "DISEASE":
+                        diseases_indexes.append(idx)
+                    elif entity[2] == "RELATION":
+                        relations_indexes.append(idx)
+                    else:
+                        raise ValueError(f"Invalid entity type: {entity[2]}")
+                    break
+                elif start_char >= end:
+                    break
+                elif start >= end_char:
+                    entity_idx += 1
+        assert entity_idx == len(entities), f"Only {entity_idx} out of {len(entities)} entities found in the prompt"
+        return genes_indexes, diseases_indexes, relations_indexes
 
     def __len__(self):
         return len(self.data)
@@ -87,16 +131,15 @@ class BioTriplexDataset(Dataset):
 
         item = self.data[index]
 
-        prompt = self.input_to_prompt(item["input"])
         # prompt = item['input']#f"item['input']\n\n"
-
+        prompt_prefix, prompt_input, prompt_suffix = self.input_to_prompt(item["input"])
+        prompt = prompt_prefix + prompt_input + prompt_suffix
         # example = prompt + item["output"]
         example = prompt + "\n### Response:\n" + item["output"]
         if item["output"] != "[]":
             weight = POSITIVE_WEIGHT
         else:
             weight = NEGATIVE_WEIGHT
-        prompt = torch.tensor(self.tokenizer.encode(prompt), dtype=torch.int64)
         example = self.tokenizer.encode(example)
         example.append(self.tokenizer.eos_token_id)
         example = torch.tensor(example, dtype=torch.int64)
@@ -109,7 +152,23 @@ class BioTriplexDataset(Dataset):
                 example = example[: self.max_words]
                 # self.num_truncated_examples += 1
         labels = copy.deepcopy(example)
-        labels[: len(prompt)] = -1
+        if self.entity_tokens_targets:
+            prompt_prefix = self.tokenizer.encode(prompt_prefix)
+            prompt_input = self.tokenizer.encode(prompt_input, add_special_tokens=False, return_offsets_mapping=True)
+            prompt_offsets_mapping = prompt_input["offset_mapping"]
+            prompt_input = prompt_input["input_ids"]
+            prompt_suffix = self.tokenizer.encode(prompt_suffix, add_special_tokens=False)
+            labels[:len(prompt_prefix)] = -1
+            labels[len(prompt_prefix): len(prompt_prefix) + len(prompt_input)] = self.no_entity_special_token_id
+            genes_indexes, diseases_indexes, relations_indexes = self.get_entity_indexes(item["entities"],
+                                                                                         prompt_offsets_mapping)
+            labels[genes_indexes] = self.gene_special_token_id
+            labels[diseases_indexes] = self.disease_special_token_id
+            labels[relations_indexes] = self.relation_special_token_id
+            labels[len(prompt_prefix) + len(prompt_input): len(prompt_prefix) + len(prompt_input) + len(prompt_suffix)] = -1
+        else:
+            prompt = torch.tensor(self.tokenizer.encode(prompt), dtype=torch.int64)
+            labels[:len(prompt)] = -1
         example_mask = example.ge(0)
         label_mask = labels.ge(0)
         example[~example_mask] = 0
@@ -135,8 +194,8 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B-Instruct")
     from llama_recipes.configs.datasets import biotriplex_dataset
     dataset_config = biotriplex_dataset
-    for mode in "train", "val", "test":
-        dataset = BioTriplexDataset(dataset_config, tokenizer, mode, max_words=None)
+    for mode in "val", : #"train", "test":
+        dataset = BioTriplexDataset(dataset_config, tokenizer, mode, max_words=None, entity_tokens_targets=True)
         # print number of positive and negative examples (with weight 1 and 0.1 respectively)
         num_positive = 0
         num_negative = 0
