@@ -197,6 +197,11 @@ class BioTriplexDataset(Dataset):
         # example[example == -100] = self.tokenizer.pad_token_id
         # labels[labels == -100] = self.tokenizer.pad_token_id
 
+        # print each word with its label and token id
+        for i in range(len(example)):
+            print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
+
+
         return {
             "input_ids": example.tolist(),
             "labels": labels.tolist(),
