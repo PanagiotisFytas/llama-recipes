@@ -115,6 +115,7 @@ class BioTriplexDataset(Dataset):
                 entity = entities[entity_idx]
                 start_char, end_char = entity[:2]
                 print(f"entity_idx {entity_idx}, start_char {start_char}, end_char {end_char}, start {start}, end {end}")
+                print("entity", entity)
                 if start <= start_char < end or start <= end_char < end or (start_char < start and end_char > end):
                     if entity[2] == "GENE":
                         genes_indexes.append(idx)
@@ -165,12 +166,15 @@ class BioTriplexDataset(Dataset):
         labels = copy.deepcopy(example)
         if self.entity_tokens_targets:
             prompt_prefix = self.tokenizer.encode(prompt_prefix)
+            print("prompt_input", prompt_input)
             prompt_input = self.tokenizer(prompt_input, add_special_tokens=False, return_offsets_mapping=True)
             prompt_offsets_mapping = prompt_input["offset_mapping"]
+            print("prompt_input", prompt_input)
             prompt_input = prompt_input["input_ids"]
             prompt_suffix = self.tokenizer.encode(prompt_suffix, add_special_tokens=False)
             labels[:len(prompt_prefix)] = -1
             labels[len(prompt_prefix): len(prompt_prefix) + len(prompt_input)] = self.no_entity_special_token_id
+            print(item["entities"])
             genes_indexes, diseases_indexes, relations_indexes = self.get_entity_indexes(item["entities"],
                                                                                          prompt_offsets_mapping)
             labels[genes_indexes] = self.gene_special_token_id
