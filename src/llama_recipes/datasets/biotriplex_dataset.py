@@ -114,6 +114,7 @@ class BioTriplexDataset(Dataset):
             while entity_idx < len(entities):
                 entity = entities[entity_idx]
                 start_char, end_char = entity[:2]
+                print(f"entity_idx {entity_idx}, start_char {start_char}, end_char {end_char}, start {start}, end {end}")
                 if start <= start_char < end or start <= end_char < end or (start_char < start and end_char > end):
                     if entity[2] == "GENE":
                         genes_indexes.append(idx)
