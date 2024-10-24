@@ -30,7 +30,8 @@ INSTRUCTION = """**Extract triplets**: Identify and extract sets of three linked
 
 SYS_PROMPT = """You are a helpful assistant that extracts the list of {"gene":<gene_text>, "disease":<disease_text", "relation":<relation_text>} triplets from the given text. If no triplets are found, please provide an empty list. """
 class BioTriplexDataset(Dataset):
-    def __init__(self, dataset_config, tokenizer, split_name, max_words=None, entity_tokens_targets=False):
+    def __init__(self, dataset_config, tokenizer, split_name, max_words=None, entity_tokens_targets=False,
+                 special_tokens=True):
         #self.data = json.load(open(dataset_config.data_path))
 
         if split_name == "train":
@@ -65,11 +66,19 @@ class BioTriplexDataset(Dataset):
         # self.longest_input = 0
         # self.input_seen = set()
         self.entity_tokens_targets = entity_tokens_targets
+        self.special_tokens = sepcial_tokens
         if entity_tokens_targets:
-            self.gene_special_token_id = tokenizer.vocab['<|gene token|>']
-            self.disease_special_token_id = tokenizer.vocab['<|disease token|>']
-            self.relation_special_token_id = tokenizer.vocab['<|relation token|>']
-            self.no_entity_special_token_id = tokenizer.vocab['<|no entity token|>']
+            if special_tokens:
+                self.gene_special_token_id = tokenizer.vocab['<|gene token|>']
+                self.disease_special_token_id = tokenizer.vocab['<|disease token|>']
+                self.relation_special_token_id = tokenizer.vocab['<|relation token|>']
+                self.no_entity_special_token_id = tokenizer.vocab['<|no entity token|>']
+            else:
+                self.gene_special_token_id = tokenizer.vocab['gene']
+                self.disease_special_token_id = tokenizer.vocab['condition'] # or 'isease' ?
+                self.relation_special_token_id = tokenizer.vocab['relation']
+                self.no_entity_special_token_id = tokenizer.vocab['null']
+
 
     @staticmethod
     def correct_entity_char_index(entities, sentences, sentence_idx):
@@ -145,6 +154,7 @@ class BioTriplexDataset(Dataset):
         example = torch.tensor(example, dtype=torch.int64)
         # self.longest_input = max(self.longest_input, example.shape[0])
         if self.max_words is not None:
+            raise NotImplementedError("max_words is not implemented")
             padding = self.max_words - example.shape[0]
             if padding > 0:
                 example = torch.cat((example, torch.zeros(padding, dtype=torch.int64) - 1))
@@ -203,24 +213,15 @@ if __name__ == "__main__":
         # print number of positive and negative examples (with weight 1 and 0.1 respectively)
         num_positive = 0
         num_negative = 0
-        for i in range(len(dataset)):
-            if dataset[i]["weight"] == POSITIVE_WEIGHT:
-                num_positive += 1
-            else:
-                num_negative += 1
-        print("MODE:", mode)
-        print(num_positive, num_negative)
-        # print len of longest input
-        max_len = 0
-        for i in range(len(dataset)):
-            max_len = max(max_len, len(dataset[i]["input_ids"]))
-        print(max_len)
-        # print(dataset[0]["input_ids"].shape)
-        # print(dataset[0]["labels"].shape)
-        # print(dataset[0]["attention_mask"].shape)
-        # print(tokenizer.decode(dataset[0]["input_ids"]))
-        # print(tokenizer.decode(dataset[0]["labels"]))
-        # print(dataset[0]["attention_mask"])
-        # print(dataset[0]["input_ids"].dtype)
-        # print(dataset[0]["labels"].dtype)
-        # print(dataset[0]["attention_mask"].dtype)
+        # for i in range(len(dataset)):
+        #     if dataset[i]["weight"] == POSITIVE_WEIGHT:
+        #         num_positive += 1
+        #     else:
+        #         num_negative += 1
+        # print("MODE:", mode)
+        # print(num_positive, num_negative)
+        # # print len of longest input
+        # max_len = 0
+        # for i in range(len(dataset)):
+        #     max_len = max(max_len, len(dataset[i]["input_ids"]))
+        # print(max_len)
