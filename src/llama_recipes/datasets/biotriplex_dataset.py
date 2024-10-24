@@ -199,16 +199,13 @@ class BioTriplexDataset(Dataset):
         # example[example == -100] = self.tokenizer.pad_token_id
         # labels[labels == -100] = self.tokenizer.pad_token_id
 
-        # print each word with its label and token id if labels != -100
-        for i in range(len(self.tokenizer.encode(prompt))):
-            if labels[i].item() not in [-1, -100, 128259]:
-                print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
-
-        # print doc_key
-        print(item["doc_key"])
-        # print the text and type of all entities
-        for entity in item["entities"]:
-            print(item["input"][entity[0]: entity[1]], entity[2])
+        # # print each word with its label and token id if labels != -100
+        # for i in range(len(self.tokenizer.encode(prompt))):
+        #     if labels[i].item() not in [-1, -100, 128259]:
+        #         print(self.tokenizer.decode(example[i].item()), labels[i].item(), example[i].item())
+        # print(item["doc_key"])
+        # for entity in item["entities"]:
+        #     print(item["input"][entity[0]: entity[1]], entity[2])
 
         assert len(example) == len(labels)
         return {
@@ -236,15 +233,15 @@ if __name__ == "__main__":
         # print number of positive and negative examples (with weight 1 and 0.1 respectively)
         num_positive = 0
         num_negative = 0
-        # for i in range(len(dataset)):
-        #     if dataset[i]["weight"] == POSITIVE_WEIGHT:
-        #         num_positive += 1
-        #     else:
-        #         num_negative += 1
-        # print("MODE:", mode)
-        # print(num_positive, num_negative)
-        # # print len of longest input
-        # max_len = 0
-        # for i in range(len(dataset)):
-        #     max_len = max(max_len, len(dataset[i]["input_ids"]))
-        # print(max_len)
+        for i in range(len(dataset)):
+            if dataset[i]["weight"] == POSITIVE_WEIGHT:
+                num_positive += 1
+            else:
+                num_negative += 1
+        print("MODE:", mode)
+        print(num_positive, num_negative)
+        # print len of longest input
+        max_len = 0
+        for i in range(len(dataset)):
+            max_len = max(max_len, len(dataset[i]["input_ids"]))
+        print(max_len)
