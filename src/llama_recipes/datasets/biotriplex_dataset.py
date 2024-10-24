@@ -105,7 +105,7 @@ class BioTriplexDataset(Dataset):
         return prompt_prefix, prompt_input, prompt_suffix
 
     @staticmethod
-    def get_entity_indexes(entities, prompt_offsets_mapping):
+    def get_entity_indexes(entities, prompt_offsets_mapping, index_offset=0):
         genes_indexes = []
         diseases_indexes = []
         relations_indexes = []
@@ -118,11 +118,11 @@ class BioTriplexDataset(Dataset):
                 # print("entity", entity)
                 if start <= start_char < end or start < end_char <= end or (start_char < start and end_char > end):
                     if entity[2] == "GENE":
-                        genes_indexes.append(idx)
+                        genes_indexes.append(idx + index_offset)
                     elif entity[2] == "DISEASE":
-                        diseases_indexes.append(idx)
+                        diseases_indexes.append(idx + index_offset)
                     elif entity[2] == "RELATION":
-                        relations_indexes.append(idx)
+                        relations_indexes.append(idx + index_offset)
                     else:
                         raise ValueError(f"Invalid entity type: {entity[2]}")
                     break
@@ -180,7 +180,9 @@ class BioTriplexDataset(Dataset):
             # import time
             # time.sleep(10)
             genes_indexes, diseases_indexes, relations_indexes = self.get_entity_indexes(item["entities"],
-                                                                                         prompt_offsets_mapping)
+                                                                                         prompt_offsets_mapping,
+                                                                                         index_offset=len(prompt_prefix)
+                                                                                         )
             labels[genes_indexes] = self.gene_special_token_id
             labels[diseases_indexes] = self.disease_special_token_id
             labels[relations_indexes] = self.relation_special_token_id
