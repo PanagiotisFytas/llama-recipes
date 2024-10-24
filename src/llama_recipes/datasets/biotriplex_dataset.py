@@ -154,7 +154,7 @@ class BioTriplexDataset(Dataset):
         labels = copy.deepcopy(example)
         if self.entity_tokens_targets:
             prompt_prefix = self.tokenizer.encode(prompt_prefix)
-            prompt_input = self.tokenizer.encode(prompt_input, add_special_tokens=False, return_offsets_mapping=True)
+            prompt_input = self.tokenizer(prompt_input, add_special_tokens=False, return_offsets_mapping=True)
             prompt_offsets_mapping = prompt_input["offset_mapping"]
             prompt_input = prompt_input["input_ids"]
             prompt_suffix = self.tokenizer.encode(prompt_suffix, add_special_tokens=False)
