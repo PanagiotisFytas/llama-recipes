@@ -116,7 +116,7 @@ class BioTriplexDataset(Dataset):
                 start_char, end_char = entity[:2]
                 print(f"entity_idx {entity_idx}, start_char {start_char}, end_char {end_char}, start {start}, end {end}")
                 print("entity", entity)
-                if start <= start_char < end or start <= end_char < end or (start_char < start and end_char > end):
+                if start <= start_char < end or start < end_char <= end or (start_char < start and end_char > end):
                     if entity[2] == "GENE":
                         genes_indexes.append(idx)
                     elif entity[2] == "DISEASE":
@@ -130,6 +130,8 @@ class BioTriplexDataset(Dataset):
                     break
                 elif start >= end_char:
                     entity_idx += 1
+                else:
+                    raise Exception("Non exchaustive cases")
         assert entity_idx == len(entities), f"Only {entity_idx} out of {len(entities)} entities found in the prompt"
         return genes_indexes, diseases_indexes, relations_indexes
 
