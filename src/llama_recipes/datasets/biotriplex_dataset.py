@@ -50,12 +50,16 @@ class BioTriplexDataset(Dataset):
         new_dataset = []
         for sample in dataset:
             for idx, sentence in enumerate(sample["sentences"]):
+                # strip whitespace from start and end of sentence while counting the number of whitespaces striped from
+                # the start of the sentence
+                stripped_sentence = sentence.lstrip()
+                num_leading_spaces = len(sentence) - len(stripped_sentence)
+                stripped_sentence = stripped_sentence.rstrip()
                 new_sample = {
-                    # strip whitespace from start and end of sentence
                     "input": sentence.strip(),
                     "output": triplets_to_json(sample["triplets_text"][idx]),
                     "doc_key": sample["doc_key"] + f"_sentence_{idx}",
-                    "entities": self.correct_entity_char_index(sample["ner"][idx], sample["sentences"], idx)
+                    "entities": self.correct_entity_char_index(sample["ner"][idx], sample["sentences"], idx, num_leading_spaces)
                 }
                 new_dataset.append(new_sample)
         self.data = new_dataset
@@ -82,9 +86,10 @@ class BioTriplexDataset(Dataset):
 
 
     @staticmethod
-    def correct_entity_char_index(entities, sentences, sentence_idx):
+    def correct_entity_char_index(entities, sentences, sentence_idx, num_leading_spaces):
         # correct entity character indexes to be relative to the sentence and not the whole text
-        offset = sum([len(sentence) for sentence in sentences[:sentence_idx]])
+        # and remove leading spaces
+        offset = sum([len(sentence) for sentence in sentences[:sentence_idx]]) + num_leading_spaces
         for entity in entities:
             entity[0] -= offset
             entity[1] -= offset
