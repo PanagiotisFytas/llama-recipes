@@ -117,6 +117,9 @@ class BioTriplexDataset(Dataset):
                 # print(f"entity_idx {entity_idx}, start_char {start_char}, end_char {end_char}, start {start}, end {end}")
                 # print("entity", entity)
                 if start <= start_char < end or start < end_char <= end or (start_char < start and end_char > end):
+                    print("Matched entity", entity)
+                    print("Matched token", idx + index_offset)
+                    print("cords: ", start_char, end_char, start, end)
                     if entity[2] == "GENE":
                         genes_indexes.append(idx + index_offset)
                     elif entity[2] == "DISEASE":
