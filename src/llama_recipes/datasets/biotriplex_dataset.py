@@ -51,7 +51,8 @@ class BioTriplexDataset(Dataset):
         for sample in dataset:
             for idx, sentence in enumerate(sample["sentences"]):
                 new_sample = {
-                    "input": sentence,
+                    # strip whitespace from start and end of sentence
+                    "input": sentence.strip(),
                     "output": triplets_to_json(sample["triplets_text"][idx]),
                     "doc_key": sample["doc_key"] + f"_sentence_{idx}",
                     "entities": self.correct_entity_char_index(sample["ner"][idx], sample["sentences"], idx)
@@ -99,8 +100,8 @@ class BioTriplexDataset(Dataset):
     def input_to_prompt(self, input_text):
         # prompt = f"### Instruction:\n{INSTRUCTION}\n\n### Input:\n{input_text}\n\n### Response:\n"
         prompt_prefix = f"<|start_header_id|>system<|end_header_id|>{SYS_PROMPT}<|eot_id|><|start_header_id|>user<|end_header_id|>" +\
-            f"### Instruction:\n{INSTRUCTION}\n### Input:"
-        prompt_input = input_text
+            f"### Instruction:\n{INSTRUCTION}\n### Input:\n"
+        prompt_input = input_text + "\n\n"
         prompt_suffix = "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
         return prompt_prefix, prompt_input, prompt_suffix
 
